@@ -1,5 +1,6 @@
 package com.lida.security.jwt;
 
+import com.lida.util.StringUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.jackson.io.JacksonSerializer;
@@ -80,7 +81,8 @@ public class TokenProvider {
 
         Collection<? extends GrantedAuthority> authorities = Arrays
             .stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-            .filter(auth -> !auth.isBlank())
+            //            .filter(auth -> !auth.isBlank()) java11 代码特性
+            .filter(auth -> !StringUtil.isBlank(auth))
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
 

@@ -18,6 +18,13 @@ import org.springframework.core.env.Environment;
 import tech.jhipster.config.DefaultProfileUtil;
 import tech.jhipster.config.JHipsterConstants;
 
+/**
+ * @author join wick
+ * @version 1.0.0
+ * @description spring boot application entrace
+ * @createDate 2021/3/10 14:30
+ * @since 1.0.0
+ */
 @SpringBootApplication
 @EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class })
 public class AttendanceApp {
