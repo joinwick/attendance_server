@@ -59,12 +59,12 @@ spring:
   r2dbc:
     url: r2dbc:mysql://localhost:3306/attendance?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: root
-    password:
+    password: Spring2015
   thymeleaf:
     cache: false
 
 server:
-  port: 8080
+  port: 8081
 
 # ===================================================================
 # JHipster specific properties

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+
+    <!--
+        1.create table: t_user
+    -->
+    <changeSet id="202103112054" author="join_wick">
+        <!-- 创建用户表: 用户编码、用户名、密码、昵称、邮箱、头像信息、用户状态、创建者、创建时间、重置日期、入学时间、所在班级-->
+        <!-- 预判断-->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="t_user"/>
+            </not>
+        </preConditions>
+        <createTable tableName="t_user" schemaName="attendance" remarks="系统用户表">
+            <column name="user_id" type="varchar(9)" remarks="用户编码,系统生成的编码、学号、员工编号等">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_name" type="varchar(50)" remarks="用户名"/>
+            <column name="password" type="varchar(64)" remarks="用户密码哈希值">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_type" type="char(1)" defaultValue="1" remarks="用户类型,系统管理员,普通用户">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_class" type="char(1)" defaultValue="1" remarks="用户分类">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_status" type="char(1)" defaultValue="1" remarks="用户状态,已注册、已激活、已注销">
+                <constraints nullable="false" />
+            </column>
+            <column name="alias_name" type="varchar(50)" remarks="用户昵称"/>
+            <column name="email" type="varchar(255)" remarks="用户电子邮箱">
+                <constraints unique="true" nullable="true" uniqueConstraintName="ux_user_email"/>
+            </column>
+            <column name="image_url" type="varchar(255)" remarks="用户头像统一资源定位地址"/>
+            <column name="created_by" type="varchar(50)" defaultValue="system" remarks="创建者">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}" remarks="创建时间">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)" defaultValue="system" remarks="最后修改人"/>
+            <column name="last_modified_date" type="timestamp" defaultValueDate="${now}" remarks="最后修改时间"/>
+        </createTable>
+
+        <!-- 预判断-->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="t_student"/>
+            </not>
+        </preConditions>
+        <!-- 创建学生表: 学号、姓名、身份证号、性别、入学时间、所在班级-->
+        <createTable tableName="t_student" schemaName="attendance" remarks="学生表">
+            <column name="student_id" type="varchar(9)" remarks="学号">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="student_name" type="varchar(50)" remarks="学生姓名"/>
+            <column name="id_card" type="char(18)" remarks="身份证号"/>
+            <column name="gender" type="char(1)" defaultValue="1" remarks="性别"/>
+            <column name="student_type" type="char(1)" defaultValue="1" remarks="学生类别"/>
+            <column name="entry_date" type="timestamp" defaultValueDate="${now}" remarks="入学日期"/>
+            <column name="class_id" type="bigint" remarks="所属班级"/>
+        </createTable>
+
+        <!-- 预判断-->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="t_teacher"/>
+            </not>
+        </preConditions>
+        <!-- 创建教职工表: 职工编号、姓名、身份证号、性别、入职时间、所在班级-->
+        <createTable tableName="t_teacher" schemaName="attendance" remarks="教职工表">
+            <column name="teacher_id" type="varchar(9)" startWith="200000000" remarks="教职工编号">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="teacher_name" type="varchar(50)" remarks="教职工姓名"/>
+            <column name="id_card" type="char(18)" remarks="身份证号"/>
+            <column name="gender" type="char(1)" defaultValue="1" remarks="性别"/>
+            <column name="teacher_type" type="char(1)" defaultValue="1" remarks="教职工类别"/>
+            <column name="entry_date" type="timestamp" defaultValueDate="${now}" remarks="入职日期"/>
+            <column name="class_id" type="bigint" remarks="所属班级"/>
+            <column name="department_id" type="bigint" remarks="所属院系"/>
+        </createTable>
+
+        <!-- 预判断-->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="t_class"/>
+            </not>
+        </preConditions>
+        <!-- 创建班级表: 班级编号、班级名称、班级类别、所属院系-->
+        <createTable tableName="t_class" schemaName="attendance" remarks="班级表">
+            <column name="class_id" type="bigint" startWith="210000000" remarks="班级编号">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="class_name" type="varchar(50)" remarks="班级名称"/>
+            <column name="class_type" type="char(1)" defaultValue="1" remarks="班级类型,研究生、本科、专科"/>
+            <column name="teacher_id" type="varchar(9)" remarks="教职工编号"/>
+            <column name="department_id" type="bigint" remarks="所属院系"/>
+        </createTable>
+
+        <!-- 预判断-->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="t_department"/>
+            </not>
+        </preConditions>
+        <!-- 创建院系表: 院系编号、院系名称、院系类别-->
+        <createTable tableName="t_department" schemaName="attendance" remarks="院系表">
+            <column name="department_id" type="bigint" startWith="220000000" remarks="院系编号">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="department_name" type="varchar(50)" remarks="院系名称"/>
+            <column name="department_type" type="char(1)" defaultValue="1" remarks="院系类型"/>
+        </createTable>
+
+        <!-- 预判断-->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="t_course"/>
+            </not>
+        </preConditions>
+        <!-- 创建课程表: 课程编号、课程名称、课程类别、课程学分、课程简介-->
+        <createTable tableName="t_course" schemaName="attendance" remarks="课程表">
+            <column name="course_id" type="bigint" startWith="300000000" remarks="课程编号">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="course_name" type="varchar(50)" remarks="课程名称"/>
+            <column name="course_type" type="char(1)" defaultValue="1" remarks="课程类型,通识、基础、实践、实习"/>
+            <column name="course_credit" type="float" defaultValue="1" remarks="课程学分"/>
+            <column name="desc" type="varchar(255)" remarks="课程简介"/>
+        </createTable>
+
+        <!-- 预判断-->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="t_attendance"/>
+            </not>
+        </preConditions>
+        <!-- 创建考勤信息表: 考勤编号、学号、班级编号、课程编号、考勤时间、考勤类型、考勤时间段、缺席事由-->
+        <createTable tableName="t_attendance" schemaName="attendance" remarks="考勤表">
+            <column name="attendance_id" type="bigint" startWith="400000000" remarks="考勤编号">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="student_id" type="varchar(9)" remarks="学号">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lecture_id" type="bigint" remarks="授课编号">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attendance_date" type="timestamp" defaultValueDate="${now}" remarks="考勤时间"/>
+            <column name="attendance_type" type="char(1)" defaultValue="1" remarks="考勤类型,迟到、早退、病假、事假、旷课">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attendance_period" type="char(1)" defaultValue="1" remarks="考勤时间段,课程一、课程二、课程三、课程四、早自习、晚自习">
+                <constraints nullable="false"/>
+            </column>
+            <column name="desc" type="varchar(255)" remarks="缺席事由"/>
+        </createTable>
+
+        <!-- 预判断-->
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="t_lecture"/>
+            </not>
+        </preConditions>
+        <!-- 创建教师授课表: 审批编号、学号、班级编号、课程编号、考勤时间、考勤类型、考勤时间段、缺席事由-->
+        <createTable tableName="t_lecture" schemaName="attendance" remarks="教师授课表">
+            <column name="lecture_id" type="bigint" startWith="500000000" remarks="授课编号">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="teacher_id" type="bigint" remarks="授课教师编号">
+                <constraints nullable="false"/>
+            </column>
+            <column name="course_id" type="bigint" remarks="课程编号">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lecture_type" type="char(1)" remarks="授课类型,线上、线下"/>
+        </createTable>
+
+        <loadData
+                  file="config/liquibase/data/t_user.csv"
+                  separator=";"
+                  tableName="t_user">
+        </loadData>
+
+        <loadData
+                  file="config/liquibase/data/t_student.csv"
+                  separator=";"
+                  tableName="t_student">
+        </loadData>
+
+        <loadData
+            file="config/liquibase/data/t_teacher.csv"
+            separator=";"
+            tableName="t_teacher">
+        </loadData>
+
+        <loadData
+            file="config/liquibase/data/t_class.csv"
+            separator=";"
+            tableName="t_class">
+        </loadData>
+
+        <loadData
+            file="config/liquibase/data/t_department.csv"
+            separator=";"
+            tableName="t_department">
+        </loadData>
+
+        <loadData
+            file="config/liquibase/data/t_course.csv"
+            separator=";"
+            tableName="t_course">
+        </loadData>
+
+        <loadData
+            file="config/liquibase/data/t_attendance.csv"
+            separator=";"
+            tableName="t_attendance">
+        </loadData>
+
+        <loadData
+            file="config/liquibase/data/t_lecture.csv"
+            separator=";"
+            tableName="t_lecture">
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

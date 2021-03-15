@@ -1,0 +1,2 @@
+attendance_id;student_id;lecture_id;attendance_date;attendance_type;attendance_period;desc
+400000000;100000001;500000000;;3;1;缺席事由

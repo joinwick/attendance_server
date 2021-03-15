@@ -21,7 +21,7 @@ import tech.jhipster.config.JHipsterConstants;
 /**
  * @author join wick
  * @version 1.0.0
- * @description spring boot application entrace
+ * @description spring boot application main entry
  * @createDate 2021/3/10 14:30
  * @since 1.0.0
  */
@@ -29,7 +29,7 @@ import tech.jhipster.config.JHipsterConstants;
 @EnableConfigurationProperties({ LiquibaseProperties.class, ApplicationProperties.class })
 public class AttendanceApp {
 
-    private static final Logger log = LoggerFactory.getLogger(AttendanceApp.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AttendanceApp.class);
 
     private final Environment env;
 
@@ -51,7 +51,7 @@ public class AttendanceApp {
             activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) &&
             activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)
         ) {
-            log.error(
+            LOGGER.error(
                 "You have misconfigured your application! It should not run " + "with both the 'dev' and 'prod' profiles at the same time."
             );
         }
@@ -59,7 +59,7 @@ public class AttendanceApp {
             activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) &&
             activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_CLOUD)
         ) {
-            log.error(
+            LOGGER.error(
                 "You have misconfigured your application! It should not " + "run with both the 'dev' and 'cloud' profiles at the same time."
             );
         }
@@ -88,9 +88,9 @@ public class AttendanceApp {
         try {
             hostAddress = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            log.warn("The host name could not be determined, using `localhost` as fallback");
+            LOGGER.warn("The host name could not be determined, using `localhost` as fallback");
         }
-        log.info(
+        LOGGER.info(
             "\n----------------------------------------------------------\n\t" +
             "Application '{}' is running! Access URLs:\n\t" +
             "Local: \t\t{}://localhost:{}{}\n\t" +
